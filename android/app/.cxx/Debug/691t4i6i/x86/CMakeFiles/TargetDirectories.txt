@@ -1,0 +1,2 @@
+/Users/lucas/Desktop/App Cali/cali_app/android/app/.cxx/Debug/691t4i6i/x86/CMakeFiles/edit_cache.dir
+/Users/lucas/Desktop/App Cali/cali_app/android/app/.cxx/Debug/691t4i6i/x86/CMakeFiles/rebuild_cache.dir
