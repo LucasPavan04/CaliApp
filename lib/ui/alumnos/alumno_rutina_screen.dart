@@ -83,7 +83,9 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
                       r.nombre,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    subtitle: Text(r.descripcion),
+                    subtitle: Text(
+                      '${r.descripcion} · ${r.cantidadDias} día${r.cantidadDias == 1 ? '' : 's'}',
+                    ),
                     onTap: () => Navigator.pop(context, r),
                   );
                 },
@@ -183,6 +185,8 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: RutinaCardWidget(
                   rutina: rutina,
+                  dniAlumno:
+                      widget.showAssignDelete ? null : widget.alumno.dni,
                   onDelete: widget.showAssignDelete
                       ? () => _confirmarEliminar(rutina)
                       : null,

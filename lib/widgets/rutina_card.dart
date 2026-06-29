@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 class RutinaCardWidget extends StatelessWidget {
   final RutinaModel rutina;
   final VoidCallback? onDelete;
+  final String? dniAlumno;
 
-  const RutinaCardWidget({super.key, required this.rutina, this.onDelete});
+  const RutinaCardWidget({
+    super.key,
+    required this.rutina,
+    this.onDelete,
+    this.dniAlumno,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +21,10 @@ class RutinaCardWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetalleRutinaScreen(rutina: rutina),
+            builder: (context) => DetalleRutinaScreen(
+              rutina: rutina,
+              dniAlumno: dniAlumno,
+            ),
           ),
         );
       },
@@ -55,7 +64,7 @@ class RutinaCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      rutina.descripcion,
+                      '${rutina.descripcion} · ${rutina.cantidadDias} día${rutina.cantidadDias == 1 ? '' : 's'}',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.grey.shade600,

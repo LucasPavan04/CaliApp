@@ -1,4 +1,4 @@
-import '../ui/models/alumno_model.dart';
+ import '../ui/models/alumno_model.dart';
 
 class AlumnoData {
   static final AlumnoData _instance = AlumnoData._internal();

@@ -1,10 +1,13 @@
 import '../ui/models/detalle_rutina_model.dart';
+import '../ui/models/dia_rutina_model.dart';
 import '../ui/models/rutina_model.dart';
 
 class RutinaData {
   static final RutinaData _instance = RutinaData._internal();
   factory RutinaData() => _instance;
-  RutinaData._internal();
+  RutinaData._internal() {
+    asignarPlantillaAAlumno('87654321', _rutinasPorDefecto().first);
+  }
 
   final Map<String, List<RutinaModel>> _rutinasPorDni = {};
   final List<RutinaModel> _plantillas = [];
@@ -53,7 +56,30 @@ class RutinaData {
 
   /// Asigna una plantilla a un alumno (copia la rutina a sus rutinas)
   void asignarPlantillaAAlumno(String dni, RutinaModel plantilla) {
-    agregarRutina(dni, plantilla);
+    agregarRutina(dni, plantilla.copy());
+  }
+
+  RutinaModel? getRutinaAlumno(String dni, String rutinaId) {
+    final lista = _rutinasPorDni[dni];
+    if (lista == null) return null;
+    try {
+      return lista.firstWhere((r) => r.id == rutinaId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void resetCompletadosDia(String dni, String rutinaId, int diaNumero) {
+    final rutina = getRutinaAlumno(dni, rutinaId);
+    if (rutina == null) return;
+    for (final dia in rutina.dias) {
+      if (dia.numero == diaNumero) {
+        for (final ejercicio in dia.ejercicios) {
+          ejercicio.completado = false;
+        }
+        break;
+      }
+    }
   }
 
   /// Quita una rutina de un alumno por id
@@ -67,50 +93,54 @@ class RutinaData {
     return [
       RutinaModel(
         id: '1',
-        nombre: 'Día 1 - Brazos',
-        descripcion: 'Volumen',
-        detalles: [
-          DetalleRutinaModel(
-            nombre: 'Press de banca',
-            series: 4,
-            repeticiones: 10,
-            pesoSugerido: 60,
-            videoUrl: 'https://www.youtube.com/watch?v=SCVCLChPQFY',
+        nombre: 'Rutina Full Body',
+        descripcion: '3 días por semana',
+        dias: [
+          DiaRutinaModel(
+            numero: 1,
+            nombre: 'Día 1 - Brazos',
+            ejercicios: [
+              DetalleRutinaModel(
+                nombre: 'Press de banca',
+                series: 4,
+                repeticiones: 10,
+                pesoSugerido: 60,
+                videoUrl: 'https://www.youtube.com/watch?v=SCVCLChPQFY',
+              ),
+              DetalleRutinaModel(
+                nombre: 'Curl bíceps',
+                series: 3,
+                repeticiones: 12,
+                pesoSugerido: 10,
+                videoUrl: 'https://www.youtube.com/watch?v=1oed-UmAxFs',
+              ),
+            ],
           ),
-          DetalleRutinaModel(
-            nombre: 'Curl bíceps',
-            series: 3,
-            repeticiones: 12,
-            pesoSugerido: 10,
-            videoUrl: 'https://www.youtube.com/watch?v=1oed-UmAxFs',
+          DiaRutinaModel(
+            numero: 2,
+            nombre: 'Día 2 - Piernas',
+            ejercicios: [
+              DetalleRutinaModel(
+                nombre: 'Sentadillas',
+                series: 4,
+                repeticiones: 12,
+                pesoSugerido: 80,
+                videoUrl: 'https://www.youtube.com/watch?v=1oed-UmAxFs',
+              ),
+            ],
           ),
-        ],
-      ),
-      RutinaModel(
-        id: '2',
-        nombre: 'Día 2 - Piernas',
-        descripcion: 'Fuerza',
-        detalles: [
-          DetalleRutinaModel(
-            nombre: 'Sentadillas',
-            series: 4,
-            repeticiones: 12,
-            pesoSugerido: 80,
-            videoUrl: 'https://www.youtube.com/watch?v=1oed-UmAxFs',
-          ),
-        ],
-      ),
-      RutinaModel(
-        id: '3',
-        nombre: 'Día 3 - Abdomen',
-        descripcion: 'Explosividad',
-        detalles: [
-          DetalleRutinaModel(
-            nombre: 'Plancha',
-            series: 3,
-            repeticiones: 30,
-            pesoSugerido: 0,
-            videoUrl: 'https://www.youtube.com/watch?v=1oed-UmAxFs',
+          DiaRutinaModel(
+            numero: 3,
+            nombre: 'Día 3 - Abdomen',
+            ejercicios: [
+              DetalleRutinaModel(
+                nombre: 'Plancha',
+                series: 3,
+                repeticiones: 30,
+                pesoSugerido: 0,
+                videoUrl: 'https://www.youtube.com/watch?v=1oed-UmAxFs',
+              ),
+            ],
           ),
         ],
       ),

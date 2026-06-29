@@ -21,6 +21,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
+  final TextEditingController _descripcionController = TextEditingController();
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
     if (e != null) {
       _nombreController.text = e.nombre;
       _urlController.text = e.videoUrl;
+      _descripcionController.text = e.descripcion;
     }
   }
 
@@ -36,6 +38,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
   void dispose() {
     _nombreController.dispose();
     _urlController.dispose();
+    _descripcionController.dispose();
     super.dispose();
   }
 
@@ -103,6 +106,29 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _descripcionController,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  labelText: 'Descripción del ejercicio',
+                  hintText: 'Explicá en qué consiste el ejercicio',
+                  filled: true,
+                  fillColor: Colors.white,
+                  alignLabelWithHint: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xffFFD700), width: 2),
+                  ),
+                ),
+                validator: (value) =>
+                    value == null || value.trim().isEmpty
+                        ? 'Ingresá una descripción'
+                        : null,
+              ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -119,7 +145,12 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                     if (_formKey.currentState!.validate()) {
                       final nombre = _nombreController.text.trim();
                       final url = _urlController.text.trim();
-                      final nuevo = EjercicioModel(nombre: nombre, videoUrl: url);
+                      final descripcion = _descripcionController.text.trim();
+                      final nuevo = EjercicioModel(
+                        nombre: nombre,
+                        videoUrl: url,
+                        descripcion: descripcion,
+                      );
 
                       if (widget.indexExistente != null) {
                         EjercicioData().actualizarEjercicio(widget.indexExistente!, nuevo);
