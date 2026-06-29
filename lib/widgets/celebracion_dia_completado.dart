@@ -1,13 +1,23 @@
 import 'dart:math' as math;
 
+import 'package:cali_app/utils/tiempo_utils.dart';
 import 'package:flutter/material.dart';
 
 class CelebracionDiaCompletado extends StatefulWidget {
   final String nombreDia;
+  final int? tiempoSegundos;
 
-  const CelebracionDiaCompletado({super.key, required this.nombreDia});
+  const CelebracionDiaCompletado({
+    super.key,
+    required this.nombreDia,
+    this.tiempoSegundos,
+  });
 
-  static Future<void> mostrar(BuildContext context, String nombreDia) {
+  static Future<void> mostrar(
+    BuildContext context,
+    String nombreDia, {
+    int? tiempoSegundos,
+  }) {
     return showGeneralDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -15,7 +25,10 @@ class CelebracionDiaCompletado extends StatefulWidget {
       barrierColor: Colors.black.withOpacity(0.45),
       transitionDuration: const Duration(milliseconds: 350),
       pageBuilder: (context, _, __) {
-        return CelebracionDiaCompletado(nombreDia: nombreDia);
+        return CelebracionDiaCompletado(
+          nombreDia: nombreDia,
+          tiempoSegundos: tiempoSegundos,
+        );
       },
       transitionBuilder: (context, animation, _, child) {
         return FadeTransition(opacity: animation, child: child);
@@ -165,6 +178,38 @@ class _CelebracionDiaCompletadoState extends State<CelebracionDiaCompletado>
                             color: Colors.grey.shade600,
                           ),
                         ),
+                        if (widget.tiempoSegundos != null) ...[
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xffFFD700).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.timer_outlined,
+                                  size: 18,
+                                  color: Colors.grey.shade700,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  formatearDuracion(widget.tiempoSegundos!),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         Text(
                           'Seguí así 💪',

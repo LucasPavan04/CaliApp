@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:cali_app/data/ejercicio_data.dart';
 import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/ejercicios/alta_rutina_screen.dart';
@@ -5,6 +8,7 @@ import 'package:cali_app/ui/ejercicios/info_ejercicio_screen.dart';
 import 'package:cali_app/ui/models/detalle_rutina_model.dart';
 import 'package:cali_app/ui/models/dia_rutina_model.dart';
 import 'package:cali_app/ui/models/rutina_model.dart';
+import 'package:cali_app/utils/tiempo_utils.dart';
 import 'package:cali_app/widgets/app_layout.dart';
 import 'package:cali_app/widgets/celebracion_dia_completado.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +31,14 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
   late RutinaModel _rutina;
   bool _celebrando = false;
 
+  int? _diaActivo;
+  late int _diaSeleccionado;
+  final Map<int, int> _segundosAcumulados = {};
+  final Map<int, DateTime> _inicioPorDia = {};
+  Timer? _timer;
+
   bool get _modoEntrenamiento => widget.dniAlumno != null;
+  bool get _cronometroCorriendo => _timer != null;
 
   @override
   void initState() {
@@ -38,9 +49,97 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
     } else {
       _rutina = widget.rutina;
     }
+    _diaSeleccionado = _rutina.dias.first.numero;
   }
 
-  Future<void> _onEjercicioCompletado(DiaRutinaModel dia, bool _) async {
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _iniciarCronometro() {
+    if (_diaActivo != null && _diaActivo != _diaSeleccionado) {
+      _pausarCronometro(_diaActivo!);
+      _timer?.cancel();
+      _timer = null;
+    }
+
+    _diaActivo = _diaSeleccionado;
+    final acumulado = _segundosAcumulados[_diaSeleccionado] ?? 0;
+    _inicioPorDia[_diaSeleccionado] =
+        DateTime.now().subtract(Duration(seconds: acumulado));
+
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+    setState(() {});
+  }
+
+  void _pausarCronometroActivo() {
+    if (_diaActivo == null) return;
+    _pausarCronometro(_diaActivo!);
+    _timer?.cancel();
+    _timer = null;
+    setState(() {});
+  }
+
+  void _reiniciarCronometro() {
+    if (_cronometroCorriendo && _diaActivo == _diaSeleccionado) {
+      _timer?.cancel();
+      _timer = null;
+      _diaActivo = null;
+    }
+    _segundosAcumulados.remove(_diaSeleccionado);
+    _inicioPorDia.remove(_diaSeleccionado);
+    setState(() {});
+  }
+
+  void _onDiaSeleccionadoChanged(int dia) {
+    if (_cronometroCorriendo) return;
+    setState(() => _diaSeleccionado = dia);
+  }
+
+  int get _tiempoMostrado {
+    if (_cronometroCorriendo && _diaActivo != null) {
+      return _tiempoActual(_diaActivo!);
+    }
+    return _segundosAcumulados[_diaSeleccionado] ?? 0;
+  }
+
+  int _pausarCronometro(int diaNumero) {
+    final inicio = _inicioPorDia[diaNumero];
+    if (inicio == null) return _segundosAcumulados[diaNumero] ?? 0;
+    final elapsed = DateTime.now().difference(inicio).inSeconds;
+    _segundosAcumulados[diaNumero] = elapsed;
+    _inicioPorDia.remove(diaNumero);
+    return elapsed;
+  }
+
+  int _detenerYCapturarTiempo(int diaNumero) {
+    if (_diaActivo == diaNumero) {
+      _timer?.cancel();
+      _timer = null;
+      _diaActivo = null;
+    }
+    final tiempo = _pausarCronometro(diaNumero);
+    _segundosAcumulados.remove(diaNumero);
+    return tiempo;
+  }
+
+  int _tiempoActual(int diaNumero) {
+    final inicio = _inicioPorDia[diaNumero];
+    if (inicio != null) {
+      return DateTime.now().difference(inicio).inSeconds;
+    }
+    return _segundosAcumulados[diaNumero] ?? 0;
+  }
+
+  Future<void> _onEjercicioCompletado(
+    DiaRutinaModel dia,
+    bool completado,
+  ) async {
     if (!_modoEntrenamiento || _celebrando) return;
 
     final todosCompletos = dia.ejercicios.every((e) => e.completado);
@@ -49,9 +148,28 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
       return;
     }
 
+    int tiempoSegundos = 0;
+    if (_diaActivo == dia.numero && _cronometroCorriendo) {
+      tiempoSegundos = _detenerYCapturarTiempo(dia.numero);
+    } else {
+      tiempoSegundos = _segundosAcumulados[dia.numero] ?? 0;
+      if (_inicioPorDia.containsKey(dia.numero)) {
+        tiempoSegundos = _pausarCronometro(dia.numero);
+      }
+      _segundosAcumulados.remove(dia.numero);
+    }
+
+    if (tiempoSegundos > 0) {
+      dia.ultimoTiempoSegundos = tiempoSegundos;
+    }
+
     setState(() {});
     _celebrando = true;
-    await CelebracionDiaCompletado.mostrar(context, dia.nombre);
+    await CelebracionDiaCompletado.mostrar(
+      context,
+      dia.nombre,
+      tiempoSegundos: tiempoSegundos > 0 ? tiempoSegundos : null,
+    );
     if (!mounted) return;
 
     RutinaData().resetCompletadosDia(
@@ -134,7 +252,18 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
                 ],
               ),
             ),
-            if (_modoEntrenamiento)
+            if (_modoEntrenamiento) ...[
+              _CronometroCard(
+                dias: _rutina.dias,
+                diaSeleccionado: _diaSeleccionado,
+                diaActivo: _diaActivo,
+                tiempoSegundos: _tiempoMostrado,
+                corriendo: _cronometroCorriendo,
+                onDiaChanged: _onDiaSeleccionadoChanged,
+                onIniciar: _iniciarCronometro,
+                onPausar: _pausarCronometroActivo,
+                onReiniciar: _reiniciarCronometro,
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Text(
@@ -142,6 +271,7 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
                 ),
               ),
+            ],
             ..._rutina.dias.map(
               (dia) => _DiaSection(
                 dia: dia,
@@ -211,7 +341,27 @@ class _DiaSection extends StatelessWidget {
                   ),
                 ),
               ),
-              if (modoEntrenamiento)
+              if (modoEntrenamiento) ...[
+                if (dia.ultimoTiempoSegundos != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 14,
+                        color: Colors.grey.shade500,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        formatearDuracion(dia.ultimoTiempoSegundos!),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ),
                 Text(
                   '$completados/$total',
                   style: TextStyle(
@@ -222,6 +372,7 @@ class _DiaSection extends StatelessWidget {
                         : Colors.grey.shade600,
                   ),
                 ),
+              ],
             ],
           ),
         ),
@@ -229,7 +380,8 @@ class _DiaSection extends StatelessWidget {
           (d) => _DetalleEjercicioTile(
             detalle: d,
             modoEntrenamiento: modoEntrenamiento,
-            onCompletadoChanged: (value) => onEjercicioCompletado(dia, value),
+            onCompletadoChanged: (value) =>
+                onEjercicioCompletado(dia, value),
           ),
         ),
       ],
@@ -492,6 +644,160 @@ class _DetalleEjercicioTileState extends State<_DetalleEjercicioTile> {
           Text(
             label,
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CronometroCard extends StatelessWidget {
+  final List<DiaRutinaModel> dias;
+  final int diaSeleccionado;
+  final int? diaActivo;
+  final int tiempoSegundos;
+  final bool corriendo;
+  final ValueChanged<int> onDiaChanged;
+  final VoidCallback onIniciar;
+  final VoidCallback onPausar;
+  final VoidCallback onReiniciar;
+
+  const _CronometroCard({
+    required this.dias,
+    required this.diaSeleccionado,
+    required this.diaActivo,
+    required this.tiempoSegundos,
+    required this.corriendo,
+    required this.onDiaChanged,
+    required this.onIniciar,
+    required this.onPausar,
+    required this.onReiniciar,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: corriendo ? const Color(0xffFFD700) : Colors.grey.shade300,
+          width: corriendo ? 2 : 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xffFFD700)
+                      .withOpacity(corriendo ? 0.35 : 0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.timer_outlined,
+                  color:
+                      corriendo ? const Color(0xffC9A600) : Colors.grey.shade600,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      corriendo
+                          ? 'Cronómetro en marcha · Día $diaActivo'
+                          : 'Cronómetro',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      formatearDuracion(tiempoSegundos),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: corriendo ? Colors.black87 : Colors.grey.shade700,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (corriendo)
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade500,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Día a cronometrar',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: dias.map((dia) {
+              final seleccionado = dia.numero == diaSeleccionado;
+              return ChoiceChip(
+                label: Text('Día ${dia.numero}'),
+                selected: seleccionado,
+                selectedColor: const Color(0xffFFD700).withOpacity(0.4),
+                onSelected: corriendo ? null : (_) => onDiaChanged(dia.numero),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: corriendo ? onPausar : onIniciar,
+                  icon: Icon(corriendo ? Icons.pause : Icons.play_arrow),
+                  label: Text(corriendo ? 'Pausar' : 'Iniciar'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffFFD700),
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+              if (tiempoSegundos > 0 && !corriendo) ...[
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: onReiniciar,
+                  icon: const Icon(Icons.replay),
+                  tooltip: 'Reiniciar',
+                  color: Colors.grey.shade600,
+                ),
+              ],
+            ],
           ),
         ],
       ),
