@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/alumno_data.dart';
 import 'package:cali_app/ui/models/alumno_model.dart';
 import 'package:cali_app/widgets/app_layout.dart';
@@ -129,7 +130,7 @@ class _AltaAlumnoScreenState extends State<AltaAlumnoScreen> {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                      WidgetStateProperty.all(const Color(0xffFFD700)),
+                      WidgetStateProperty.all(AppBranding.primary),
                       foregroundColor: WidgetStateProperty.all(Colors.black),
                 ),
                 onPressed: () {
@@ -149,7 +150,7 @@ class _AltaAlumnoScreenState extends State<AltaAlumnoScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Alumno actualizado', style: TextStyle(color: Colors.black)),
-                          backgroundColor: Color(0xffFFD700),
+                          backgroundColor: AppBranding.primary,
                         ),
                       );
                     } else {
@@ -157,7 +158,7 @@ class _AltaAlumnoScreenState extends State<AltaAlumnoScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Alumno registrado exitosamente', style: TextStyle(color: Colors.black)),
-                          backgroundColor: Color(0xffFFD700),
+                          backgroundColor: AppBranding.primary,
                         ),
                       );
                     }
@@ -166,7 +167,7 @@ class _AltaAlumnoScreenState extends State<AltaAlumnoScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content: Text('Seleccione la fecha de nacimiento', style: TextStyle(color: Colors.black),),
-                          backgroundColor: Color(0xffFFD700),),
+                          backgroundColor: AppBranding.primary,),
                     );
                   }
                 },

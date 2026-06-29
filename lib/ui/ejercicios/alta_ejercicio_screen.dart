@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/ejercicio_data.dart';
 import 'package:cali_app/ui/models/ejercicio_model.dart';
 import 'package:cali_app/widgets/app_layout.dart';
@@ -73,7 +74,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xffFFD700), width: 2),
+                    borderSide: const BorderSide(color: AppBranding.primary, width: 2),
                   ),
                 ),
                 validator: (value) =>
@@ -92,7 +93,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xffFFD700), width: 2),
+                    borderSide: const BorderSide(color: AppBranding.primary, width: 2),
                   ),
                 ),
                 validator: (value) {
@@ -121,7 +122,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xffFFD700), width: 2),
+                    borderSide: const BorderSide(color: AppBranding.primary, width: 2),
                   ),
                 ),
                 validator: (value) =>
@@ -134,7 +135,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffFFD700),
+                    backgroundColor: AppBranding.primary,
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
@@ -160,7 +161,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                               'Ejercicio actualizado',
                               style: TextStyle(color: Colors.black),
                             ),
-                            backgroundColor: Color(0xffFFD700),
+                            backgroundColor: AppBranding.primary,
                           ),
                         );
                       } else {
@@ -171,7 +172,7 @@ class _AltaEjercicioScreenState extends State<AltaEjercicioScreen> {
                               'Ejercicio registrado exitosamente',
                               style: TextStyle(color: Colors.black),
                             ),
-                            backgroundColor: Color(0xffFFD700),
+                            backgroundColor: AppBranding.primary,
                           ),
                         );
                       }

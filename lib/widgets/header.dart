@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWavesGradient extends StatelessWidget {
@@ -6,10 +7,8 @@ class HeaderWavesGradient extends StatelessWidget {
   @override
   Widget build(context) {
     return Container(
-      //*Defino mi canvas como toda la pantalla del dispositivo ...
       height: double.infinity,
       width: double.infinity,
-      // color: Color(0xff615AAB),
       child: CustomPaint(
         painter: _HeaderWavesGradient(),
       ),
@@ -22,23 +21,21 @@ class _HeaderWavesGradient extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height * 0.35);
 
-    const Gradient gradiente = LinearGradient(
+    final Gradient gradiente = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: <Color>[
-        Color(0xffFFD700),
-        Color(0xffFFC107),
+        AppBranding.primary,
+        AppBranding.primaryDark,
       ],
     );
 
     final paint = Paint()..shader = gradiente.createShader(rect);
-    paint.color = const Color(0xffFFD700);
-    //*El stroke son los bordes y el fill es cuando lo quiero rellenar ...
-    paint.style = PaintingStyle.fill; //PaintingStyle.stroke;
+    paint.color = AppBranding.primary;
+    paint.style = PaintingStyle.fill;
     paint.strokeWidth = 20;
 
     final path = Path();
-    //*Dibujar con el path y el lapiz ...
     path.lineTo(0, size.height * 0.25);
     path.quadraticBezierTo(size.width * 0.25, size.height * 0.3,
         size.width * 0.5, size.height * 0.25);

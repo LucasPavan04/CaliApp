@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/utils/youtube_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -76,7 +77,7 @@ class YoutubeVideoTile extends StatelessWidget {
             ),
           ),
           Material(
-            color: const Color(0xffFFD700),
+            color: AppBranding.primary,
             child: InkWell(
               onTap: () => _reproducir(context),
               child: Padding(

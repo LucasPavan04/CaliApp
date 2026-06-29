@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/alumno_data.dart';
 import 'package:cali_app/ui/alumnos/alta_alumno_screen.dart';
 import 'package:cali_app/ui/alumnos/alumno_rutina_screen.dart';
@@ -98,7 +99,7 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xffFFD700), width: 2),
+                    borderSide: const BorderSide(color: AppBranding.primary, width: 2),
                   ),
                 ),
               ),
@@ -120,7 +121,7 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
                       Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: const Color(0xffFFD700).withOpacity(0.3),
+                            backgroundColor: AppBranding.primary.withOpacity(0.3),
                             child: Text(
                               alumno.nombreCompleto.isNotEmpty
                                   ? alumno.nombreCompleto[0].toUpperCase()
@@ -177,7 +178,7 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.fitness_center, size: 18),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xffFFD700),
+                            backgroundColor: AppBranding.primary,
                             foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             shape: RoundedRectangleBorder(

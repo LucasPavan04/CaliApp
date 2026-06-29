@@ -1,4 +1,4 @@
-import 'package:cali_app/config/gimnasio_config.dart';
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/alumnos/alumno_rutina_screen.dart';
 import 'package:cali_app/ui/alumnos/alumnos_screen.dart';
@@ -96,7 +96,7 @@ class _MenuScreenState extends State<MenuScreen> {
             'No hay ejercicios disponibles para generar un día extra',
             style: TextStyle(color: Colors.black),
           ),
-          backgroundColor: Color(0xffFFD700),
+          backgroundColor: AppBranding.primary,
         ),
       );
       return;
@@ -108,7 +108,7 @@ class _MenuScreenState extends State<MenuScreen> {
           'Día extra creado con ${rutina.cantidadEjercicios} ejercicios',
           style: const TextStyle(color: Colors.black),
         ),
-        backgroundColor: const Color(0xffFFD700),
+        backgroundColor: AppBranding.primary,
       ),
     );
 
@@ -131,13 +131,13 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Future<void> _abrirWhatsAppGimnasio() async {
-    final uri = Uri.parse('https://wa.me/${GimnasioConfig.whatsapp}');
+    final uri = Uri.parse('https://wa.me/${AppBranding.whatsapp}');
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No se pudo abrir WhatsApp'),
-          backgroundColor: Color(0xffFFD700),
+          backgroundColor: AppBranding.primary,
         ),
       );
     }
@@ -150,7 +150,7 @@ class _MenuScreenState extends State<MenuScreen> {
       showBackButton: false,
       showFloatingActionButton: true,
       heroTag: 'FAB_WHATSAPP',
-      fabColor: const Color(0xFF25D366),
+      fabColor: AppBranding.whatsappGreen,
       fabChild: const FaIcon(
         FontAwesomeIcons.whatsapp,
         color: Colors.white,
@@ -179,7 +179,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       if (widget.alumno.isAdmin)
                         Chip(
                           label: const Text('Administrador', style: TextStyle(fontSize: 11)),
-                          backgroundColor: const Color(0xffFFD700),
+                          backgroundColor: AppBranding.primary,
                           padding: EdgeInsets.zero,
                           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
@@ -235,12 +235,12 @@ class _MenuScreenState extends State<MenuScreen> {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: const Color(0xffFFD700).withOpacity(0.3),
+                              color: AppBranding.primary.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(
                               item.icon ?? Icons.arrow_forward,
-                              color: const Color(0xffFFD700),
+                              color: AppBranding.primary,
                               size: 28,
                             ),
                           ),

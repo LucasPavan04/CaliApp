@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/ejercicio_data.dart';
 import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/ejercicios/alta_rutina_screen.dart';
@@ -248,7 +249,7 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
                       icon: const Icon(Icons.edit, size: 18),
                       label: const Text('Editar'),
                       style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xffFFD700),
+                        foregroundColor: AppBranding.primary,
                       ),
                     ),
                 ],
@@ -313,7 +314,7 @@ class _DiaSection extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 12, top: 8),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color(0xffFFD700).withOpacity(0.2),
+            color: AppBranding.primary.withOpacity(0.2),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -321,7 +322,7 @@ class _DiaSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xffFFD700),
+                  color: AppBranding.primary,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -454,7 +455,7 @@ class _DetalleEjercicioTileState extends State<_DetalleEjercicioTile> {
           'Peso registrado',
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Color(0xffFFD700),
+        backgroundColor: AppBranding.primary,
         duration: Duration(seconds: 1),
       ),
     );
@@ -485,7 +486,7 @@ class _DetalleEjercicioTileState extends State<_DetalleEjercicioTile> {
                   if (widget.modoEntrenamiento) ...[
                     Checkbox(
                       value: completado,
-                      activeColor: const Color(0xffFFD700),
+                      activeColor: AppBranding.primary,
                       checkColor: Colors.black87,
                       onChanged: (val) {
                         if (val == null) return;
@@ -541,7 +542,7 @@ class _DetalleEjercicioTileState extends State<_DetalleEjercicioTile> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: const BorderSide(
-                              color: Color(0xffFFD700),
+                              color: AppBranding.primary,
                               width: 2,
                             ),
                           ),
@@ -554,7 +555,7 @@ class _DetalleEjercicioTileState extends State<_DetalleEjercicioTile> {
                     ElevatedButton(
                       onPressed: _guardarPeso,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffFFD700),
+                        backgroundColor: AppBranding.primary,
                         foregroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
@@ -635,7 +636,7 @@ class _DetalleEjercicioTileState extends State<_DetalleEjercicioTile> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xffFFD700).withOpacity(0.25),
+        color: AppBranding.primary.withOpacity(0.25),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -686,7 +687,7 @@ class _CronometroCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: corriendo ? const Color(0xffFFD700) : Colors.grey.shade300,
+          color: corriendo ? AppBranding.primary : Colors.grey.shade300,
           width: corriendo ? 2 : 1,
         ),
         boxShadow: [
@@ -705,14 +706,14 @@ class _CronometroCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xffFFD700)
+                  color: AppBranding.primary
                       .withOpacity(corriendo ? 0.35 : 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.timer_outlined,
                   color:
-                      corriendo ? const Color(0xffC9A600) : Colors.grey.shade600,
+                      corriendo ? AppBranding.primaryIcon : Colors.grey.shade600,
                   size: 24,
                 ),
               ),
@@ -767,7 +768,7 @@ class _CronometroCard extends StatelessWidget {
               return ChoiceChip(
                 label: Text('Día ${dia.numero}'),
                 selected: seleccionado,
-                selectedColor: const Color(0xffFFD700).withOpacity(0.4),
+                selectedColor: AppBranding.primary.withOpacity(0.4),
                 onSelected: corriendo ? null : (_) => onDiaChanged(dia.numero),
               );
             }).toList(),
@@ -781,7 +782,7 @@ class _CronometroCard extends StatelessWidget {
                   icon: Icon(corriendo ? Icons.pause : Icons.play_arrow),
                   label: Text(corriendo ? 'Pausar' : 'Iniciar'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffFFD700),
+                    backgroundColor: AppBranding.primary,
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(

@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/ui/ejercicios/detalle_rutina_screen.dart';
 import 'package:cali_app/ui/models/rutina_model.dart';
 import 'package:flutter/material.dart';
@@ -40,13 +41,13 @@ class RutinaCardWidget extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xffFFD700).withOpacity(0.25),
+                  color: AppBranding.primary.withOpacity(0.25),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
                   Icons.fitness_center,
                   size: 32,
-                  color: Color(0xffFFD700),
+                  color: AppBranding.primary,
                 ),
               ),
               const SizedBox(width: 16),

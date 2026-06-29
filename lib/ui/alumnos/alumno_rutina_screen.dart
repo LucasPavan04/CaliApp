@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/models/alumno_model.dart';
 import 'package:cali_app/ui/models/rutina_model.dart';
@@ -30,7 +31,7 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('No hay plantillas. Creá una desde Rutinas.'),
-            backgroundColor: Color(0xffFFD700),
+            backgroundColor: AppBranding.primary,
           ),
         );
       }
@@ -78,7 +79,7 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
                 itemBuilder: (context, index) {
                   final r = plantillas[index];
                   return ListTile(
-                    leading: const Icon(Icons.fitness_center, color: Color(0xffFFD700)),
+                    leading: const Icon(Icons.fitness_center, color: AppBranding.primary),
                     title: Text(
                       r.nombre,
                       style: const TextStyle(fontWeight: FontWeight.w600),
@@ -102,7 +103,7 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Rutina "${elegida.nombre}" asignada'),
-            backgroundColor: const Color(0xffFFD700),
+            backgroundColor: AppBranding.primary,
           ),
         );
       }
@@ -137,7 +138,7 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Rutina quitada'),
-            backgroundColor: Color(0xffFFD700),
+            backgroundColor: AppBranding.primary,
           ),
         );
       }
@@ -219,7 +220,7 @@ class _AlumnoRutinaScreenState extends State<AlumnoRutinaScreen> {
                           icon: const Icon(Icons.add),
                           label: const Text('Asignar rutina'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xffFFD700),
+                            backgroundColor: AppBranding.primary,
                             foregroundColor: Colors.black,
                           ),
                         ),

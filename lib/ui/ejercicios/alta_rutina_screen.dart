@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/ejercicio_data.dart';
 import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/models/detalle_rutina_model.dart';
@@ -163,7 +164,7 @@ class _AltaRutinaScreenState extends State<AltaRutinaScreen> {
                 : 'Rutina guardada correctamente',
             style: const TextStyle(color: Colors.black),
           ),
-          backgroundColor: const Color(0xffFFD700),
+          backgroundColor: AppBranding.primary,
         ),
       );
       Navigator.pop(context, true);
@@ -180,7 +181,7 @@ class _AltaRutinaScreenState extends State<AltaRutinaScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(mensaje, style: const TextStyle(color: Colors.black)),
-        backgroundColor: const Color(0xffFFD700),
+        backgroundColor: AppBranding.primary,
       ),
     );
   }
@@ -218,7 +219,7 @@ class _AltaRutinaScreenState extends State<AltaRutinaScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide:
-                      const BorderSide(color: Color(0xffFFD700), width: 2),
+                      const BorderSide(color: AppBranding.primary, width: 2),
                 ),
               ),
             ),
@@ -236,7 +237,7 @@ class _AltaRutinaScreenState extends State<AltaRutinaScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide:
-                      const BorderSide(color: Color(0xffFFD700), width: 2),
+                      const BorderSide(color: AppBranding.primary, width: 2),
                 ),
               ),
               maxLines: 2,
@@ -265,7 +266,7 @@ class _AltaRutinaScreenState extends State<AltaRutinaScreen> {
                 return FilterChip(
                   label: Text('Día $numero'),
                   selected: activo,
-                  selectedColor: const Color(0xffFFD700).withOpacity(0.4),
+                  selectedColor: AppBranding.primary.withOpacity(0.4),
                   checkmarkColor: Colors.black87,
                   onSelected: (_) => _toggleDia(numero),
                 );
@@ -299,7 +300,7 @@ class _AltaRutinaScreenState extends State<AltaRutinaScreen> {
               child: ElevatedButton(
                 onPressed: _guardarRutina,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xffFFD700),
+                  backgroundColor: AppBranding.primary,
                   foregroundColor: Colors.black,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
@@ -432,7 +433,7 @@ class _DiaCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xffFFD700).withOpacity(0.3),
+                      color: AppBranding.primary.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -480,7 +481,7 @@ class _DiaCard extends StatelessWidget {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Color(0xffFFD700),
+                          color: AppBranding.primary,
                           width: 2,
                         ),
                       ),
@@ -545,7 +546,7 @@ class _EjercicioTile extends StatelessWidget {
                 ),
               ),
               value: seleccionado,
-              activeColor: const Color(0xffFFD700),
+              activeColor: AppBranding.primary,
               onChanged: (val) {
                 if (val == true) {
                   final sc = TextEditingController(

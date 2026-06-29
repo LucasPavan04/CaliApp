@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/data/alumno_data.dart';
 import 'package:cali_app/ui/home/menu_screen.dart';
 import 'package:cali_app/widgets/app_layout.dart';
@@ -66,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 24),
               Text(
-                'Cali Gym',
+                AppBranding.gymName,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -95,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xffFFD700), width: 2),
+                    borderSide: const BorderSide(color: AppBranding.primary, width: 2),
                   ),
                 ),
                 cursorColor: Colors.black,
@@ -126,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   ButtonStyle _styleButton(BuildContext context) {
     return ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xffFFD700),
+      backgroundColor: AppBranding.primary,
       foregroundColor: Colors.black,
       elevation: 2,
       shape: RoundedRectangleBorder(

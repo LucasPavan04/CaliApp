@@ -1,3 +1,4 @@
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/widgets/boton_back.dart';
 import 'package:cali_app/widgets/header.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class _AppLayoutState extends State<AppLayout> {
                 height: MediaQuery.of(context).size.height * 0.28,
                 width: double.infinity,
                 child: Image.asset(
-                  'assets/F2.PNG',
+                  AppBranding.headerImage,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -80,7 +81,7 @@ class _AppLayoutState extends State<AppLayout> {
               child: FloatingActionButton(
                 heroTag: widget.heroTag,
                 onPressed: widget.onPress,
-                backgroundColor: widget.fabColor ?? const Color(0xffFFD700),
+                backgroundColor: widget.fabColor ?? AppBranding.primary,
                 shape: const CircleBorder(), // asegura forma redonda
                 child: widget.fabChild ??
                     Icon(

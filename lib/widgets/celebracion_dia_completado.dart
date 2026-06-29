@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cali_app/config/app_branding.dart';
 import 'package:cali_app/utils/tiempo_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -69,7 +70,7 @@ class _CelebracionDiaCompletadoState extends State<CelebracionDiaCompletado>
       final angle = (i / 14) * 2 * math.pi;
       return _Particula(
         color: [
-          const Color(0xffFFD700),
+          AppBranding.primary,
           Colors.orange.shade300,
           Colors.amber.shade200,
           Colors.yellow.shade600,
@@ -139,7 +140,7 @@ class _CelebracionDiaCompletadoState extends State<CelebracionDiaCompletado>
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xffFFD700).withOpacity(0.35),
+                          color: AppBranding.primary.withOpacity(0.35),
                           blurRadius: 24,
                           spreadRadius: 2,
                         ),
@@ -151,13 +152,13 @@ class _CelebracionDiaCompletadoState extends State<CelebracionDiaCompletado>
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: const Color(0xffFFD700).withOpacity(0.2),
+                            color: AppBranding.primary.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
                             Icons.emoji_events_rounded,
                             size: 48,
-                            color: Color(0xffE6B800),
+                            color: AppBranding.primaryAccent,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -186,7 +187,7 @@ class _CelebracionDiaCompletadoState extends State<CelebracionDiaCompletado>
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xffFFD700).withOpacity(0.15),
+                              color: AppBranding.primary.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
