@@ -1,3 +1,4 @@
+import 'package:cali_app/config/gimnasio_config.dart';
 import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/alumnos/alumno_rutina_screen.dart';
 import 'package:cali_app/ui/alumnos/alumnos_screen.dart';
@@ -9,6 +10,8 @@ import 'package:cali_app/ui/models/alumno_model.dart';
 import 'package:cali_app/ui/models/menu_model.dart';
 import 'package:cali_app/widgets/app_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MenuScreen extends StatefulWidget {
   final Alumno alumno;
@@ -127,11 +130,33 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
+  Future<void> _abrirWhatsAppGimnasio() async {
+    final uri = Uri.parse('https://wa.me/${GimnasioConfig.whatsapp}');
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo abrir WhatsApp'),
+          backgroundColor: Color(0xffFFD700),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final menu = _buildMenu();
     return AppLayout(
       showBackButton: false,
+      showFloatingActionButton: true,
+      heroTag: 'FAB_WHATSAPP',
+      fabColor: const Color(0xFF25D366),
+      fabChild: const FaIcon(
+        FontAwesomeIcons.whatsapp,
+        color: Colors.white,
+        size: 30,
+      ),
+      onPress: _abrirWhatsAppGimnasio,
       content: Column(
         children: [
           Padding(

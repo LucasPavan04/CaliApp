@@ -11,6 +11,8 @@ class AppLayout extends StatefulWidget {
     this.onPress,
     this.heroTag,
     this.showBackButton = true,
+    this.fabChild,
+    this.fabColor,
   });
   final Widget? content;
   final bool? showFloatingActionButton;
@@ -18,6 +20,8 @@ class AppLayout extends StatefulWidget {
   final VoidCallback? onPress;
   final String? heroTag;
   final bool showBackButton;
+  final Widget? fabChild;
+  final Color? fabColor;
 
   @override
   State<AppLayout> createState() => _AppLayoutState();
@@ -76,12 +80,13 @@ class _AppLayoutState extends State<AppLayout> {
               child: FloatingActionButton(
                 heroTag: widget.heroTag,
                 onPressed: widget.onPress,
-                backgroundColor: const Color(0xffFFD700),
+                backgroundColor: widget.fabColor ?? const Color(0xffFFD700),
                 shape: const CircleBorder(), // asegura forma redonda
-                child: Icon(
-                  widget.icono,
-                  size: 30, // tamaño del ícono
-                ),
+                child: widget.fabChild ??
+                    Icon(
+                      widget.icono,
+                      size: 30, // tamaño del ícono
+                    ),
               ),
             )
           : const SizedBox.shrink(),
