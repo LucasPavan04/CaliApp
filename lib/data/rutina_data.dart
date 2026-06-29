@@ -1,5 +1,7 @@
+import '../data/ejercicio_data.dart';
 import '../ui/models/detalle_rutina_model.dart';
 import '../ui/models/dia_rutina_model.dart';
+import '../ui/models/ejercicio_model.dart';
 import '../ui/models/rutina_model.dart';
 
 class RutinaData {
@@ -11,6 +13,7 @@ class RutinaData {
 
   final Map<String, List<RutinaModel>> _rutinasPorDni = {};
   final List<RutinaModel> _plantillas = [];
+  final Map<String, DateTime> _ultimoDiaExtraPorDni = {};
 
   /// Rutinas asignadas al alumno. Los alumnos nuevos tienen lista vacía.
   List<RutinaModel> getRutinas(String dni) {
@@ -87,6 +90,82 @@ class RutinaData {
     final lista = _rutinasPorDni[dni];
     if (lista == null) return;
     lista.removeWhere((r) => r.id == rutinaId);
+  }
+
+  bool puedeGenerarDiaExtra(String dni) {
+    final ultimo = _ultimoDiaExtraPorDni[dni];
+    if (ultimo == null) return true;
+    return !_esMismaSemana(ultimo, DateTime.now());
+  }
+
+  /// Genera un día extra con ejercicios que no están en las rutinas del alumno.
+  /// Devuelve null si ya usó el beneficio esta semana o no hay ejercicios disponibles.
+  RutinaModel? generarDiaExtra(String dni) {
+    if (!puedeGenerarDiaExtra(dni)) return null;
+
+    final usados = _ejerciciosEnRutinasAlumno(dni);
+    final disponibles = EjercicioData()
+        .ejercicios
+        .where((e) => !usados.contains(e.nombre))
+        .toList();
+
+    if (disponibles.isEmpty) return null;
+
+    final rutina = RutinaModel(
+      id: 'extra_${DateTime.now().millisecondsSinceEpoch}',
+      nombre: 'Día extra',
+      descripcion: 'Ejercicios complementarios',
+      dias: [
+        DiaRutinaModel(
+          numero: 1,
+          nombre: 'Día extra',
+          ejercicios:
+              disponibles.map(_detalleDesdeEjercicio).toList(),
+        ),
+      ],
+    );
+
+    agregarRutina(dni, rutina);
+    _ultimoDiaExtraPorDni[dni] = DateTime.now();
+    return rutina;
+  }
+
+  Set<String> _ejerciciosEnRutinasAlumno(String dni) {
+    final nombres = <String>{};
+    for (final rutina in _rutinasPorDni[dni] ?? []) {
+      for (final dia in rutina.dias) {
+        for (final ejercicio in dia.ejercicios) {
+          nombres.add(ejercicio.nombre);
+        }
+      }
+    }
+    return nombres;
+  }
+
+  static bool _esMismaSemana(DateTime a, DateTime b) {
+    final inicioA = DateTime(a.year, a.month, a.day)
+        .subtract(Duration(days: a.weekday - DateTime.monday));
+    final inicioB = DateTime(b.year, b.month, b.day)
+        .subtract(Duration(days: b.weekday - DateTime.monday));
+    return inicioA.year == inicioB.year &&
+        inicioA.month == inicioB.month &&
+        inicioA.day == inicioB.day;
+  }
+
+  static DetalleRutinaModel _detalleDesdeEjercicio(EjercicioModel ejercicio) {
+    final (series, repeticiones, peso) = switch (ejercicio.nombre) {
+      'Flexiones' => (3, 15, 0.0),
+      'Dominadas' => (3, 8, 0.0),
+      'Plancha' => (3, 30, 0.0),
+      _ => (3, 12, 10.0),
+    };
+    return DetalleRutinaModel(
+      nombre: ejercicio.nombre,
+      series: series,
+      repeticiones: repeticiones,
+      pesoSugerido: peso,
+      videoUrl: ejercicio.videoUrl,
+    );
   }
 
   static List<RutinaModel> _rutinasPorDefecto() {

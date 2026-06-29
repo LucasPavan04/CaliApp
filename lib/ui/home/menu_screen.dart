@@ -1,7 +1,8 @@
-import 'package:cali_app/data/alumno_data.dart';
+import 'package:cali_app/data/rutina_data.dart';
 import 'package:cali_app/ui/alumnos/alumno_rutina_screen.dart';
 import 'package:cali_app/ui/alumnos/alumnos_screen.dart';
 import 'package:cali_app/ui/ejercicios/detalle_ejercicio_screen.dart';
+import 'package:cali_app/ui/ejercicios/detalle_rutina_screen.dart';
 import 'package:cali_app/ui/ejercicios/rutinas_screen.dart';
 import 'package:cali_app/ui/home/login_screen.dart';
 import 'package:cali_app/ui/models/alumno_model.dart';
@@ -48,11 +49,75 @@ class _MenuScreenState extends State<MenuScreen> {
         description: 'Ver mi rutina asignada',
         icon: Icons.calendar_today,
         screenToNavigate: AlumnoRutinaScreen(
-        alumno: widget.alumno,
-        showAssignDelete: widget.alumno.isAdmin,
+          alumno: widget.alumno,
+          showAssignDelete: widget.alumno.isAdmin,
+        ),
       ),
+      MenuModel(
+        title: 'Generar día extra de ejercicio',
+        description: 'Un día complementario por semana',
+        icon: Icons.add_circle_outline,
+        onTap: _generarDiaExtra,
       ),
     ];
+  }
+
+  void _generarDiaExtra() {
+    final dni = widget.alumno.dni;
+
+    if (!RutinaData().puedeGenerarDiaExtra(dni)) {
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Día extra no disponible'),
+          content: const Text(
+            'Comunicate con el profesor para planificar una nueva rutina, '
+            'adaptada a la cantidad de dias que desees entrenar',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Entendido'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    final rutina = RutinaData().generarDiaExtra(dni);
+    if (rutina == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No hay ejercicios disponibles para generar un día extra',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Color(0xffFFD700),
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Día extra creado con ${rutina.cantidadEjercicios} ejercicios',
+          style: const TextStyle(color: Colors.black),
+        ),
+        backgroundColor: const Color(0xffFFD700),
+      ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetalleRutinaScreen(
+          rutina: rutina,
+          dniAlumno: dni,
+        ),
+      ),
+    );
   }
 
   void _cerrarSesion() {
@@ -114,6 +179,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
+                      if (item.onTap != null) {
+                        item.onTap!();
+                        return;
+                      }
                       final screen = item.screenToNavigate;
                       if (screen != null) {
                         Navigator.push(

@@ -178,7 +178,9 @@ class _DetalleRutinaScreenState extends State<DetalleRutinaScreen> {
       dia.numero,
     );
     _celebrando = false;
-    setState(() {});
+
+    if (!mounted) return;
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   @override
